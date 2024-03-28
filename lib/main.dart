@@ -1,6 +1,8 @@
+import 'package:blogclub/carousel/carousel_slider.dart';
 import 'package:blogclub/data.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +35,11 @@ class MyApp extends StatelessWidget {
                 fontFamily: defaultFontFamily,
                 fontWeight: FontWeight.w700,
                 fontSize: 24,
+                color: primaryTextColor),
+            headlineLarge: TextStyle(
+                fontFamily: defaultFontFamily,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
                 color: primaryTextColor),
           )),
       debugShowCheckedModeBanner: false,
@@ -80,6 +87,10 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
               _StoryList(stories: stories),
+              const SizedBox(
+                height: 16,
+              ),
+              _CategoryList()
             ],
           ),
         ),
@@ -199,6 +210,101 @@ class _Story extends StatelessWidget {
             child: Image.asset('assets/img/stories/${story.imageFileName}'),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _CategoryList extends StatelessWidget {
+  final List<Category> categoryList = AppDatabase.categories;
+  @override
+  Widget build(BuildContext context) {
+    return CarouselSlider.builder(
+      itemCount: categoryList.length,
+      itemBuilder: (BuildContext context, int index, int realIndex) {
+        return _CategoryItem(
+          category: categoryList[index],
+          left: index == 0 ? 32 : 8,
+          right: index == categoryList.length - 1 ? 32 : 8,
+        );
+      },
+      options: CarouselOptions(
+          aspectRatio: 1.2,
+          viewportFraction: 0.8,
+          disableCenter: true,
+          initialPage: 0,
+          autoPlay: false,
+          scrollPhysics: const BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          padEnds: false,
+          enableInfiniteScroll: false,
+          enlargeCenterPage: true,
+          enlargeStrategy: CenterPageEnlargeStrategy.height),
+    );
+  }
+}
+
+class _CategoryItem extends StatelessWidget {
+  const _CategoryItem(
+      {super.key,
+      required this.category,
+      required this.left,
+      required this.right});
+
+  final Category category;
+  final double left;
+  final double right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(left, 0, right, 0),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            top: 100,
+            right: 65,
+            left: 65,
+            bottom: 48,
+            child: Container(
+              decoration: const BoxDecoration(boxShadow: [
+                BoxShadow(blurRadius: 32, color: Color(0xaa0D253C))
+              ]),
+            ),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(32),
+              ),
+              foregroundDecoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(32),
+                  gradient: const LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.center,
+                      colors: [
+                        Color(0xff0D253C),
+                        Colors.transparent,
+                      ])),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: Image.asset(
+                  'assets/img/posts/large/${category.imageFileName}',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 32,
+            bottom: 48,
+            child: Text(category.title,
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineLarge!
+                    .apply(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
