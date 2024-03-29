@@ -1,5 +1,3 @@
-![Screenshot_1711742099](https://github.com/MohaddeseSandoghdar/blogclub/assets/59332788/152f9b67-c93c-4ca5-a886-c1442e7d52f3)# blogclub
-
 A new Flutter project.
 
 ## Getting Started
